@@ -9,7 +9,7 @@ from picamera2.devices import IMX500
 from picamera2.devices.imx500 import NetworkIntrinsics, postprocess_nanodet_detection
 
 class IMX500Detector:
-    def __init__(self, model_path="/home/user/Robot/imx500-models/imx500_network_nanodet_plus_416x416_pp.rpk"):
+    def __init__(self, model_path="/usr/share/imx500-models/imx500_network_nanodet_plus_416x416_pp.rpk"):
         self.last_detections = []
         self.last_results = None
         

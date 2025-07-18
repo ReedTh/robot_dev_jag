@@ -2,56 +2,47 @@ import json
 import time
 import serial 
 from ai_camera import IMX500Detector
-from controller_drive import main_controller
-
+#from controller_drive import main_controller
+from drive_movement import drive_backward, drive_forward, turn_left, turn_right, stop_robot
 
 ser = serial.Serial("/dev/ttyAMA0", 9600)
+
 
 LEFT_ZERO = 64
 RIGHT_ZERO = 192
 
 
-def main_auto():
+def move_toward_person(x_center):
+ 
+    
+    if x_center > 0.67:
+        turn_right("MID")
+    elif x_center < 0.33:
+        turn_left("MID")
+    elif 0.4 < x_center < 0.6:
+        drive_forward("HIGH")
+    elif output_data == []:
+        stop_robot()
 
-    def move_forward(power=15):
-        left = 64 - power
-        right = 192 - power
-        ser.write(bytes([left, right]))
-        
-    def stop():
-        ser.write(bytes([LEFT_ZERO, RIGHT_ZERO]))
+    #ser.write(bytes([left, right]))
+    #ser.write(bytes([right, left]))
 
-    def move_toward_person(x_center, power=15):
-        
-            if x_center < 0.4:
-                left = 64 + int(power / 2)
-                right = 192 - power
-            elif x_center > 0.6:
-                left = 64 - power
-                right = 192 + int(power / 2)
-            elif 0.4 < x_center < 0.6:
-                left = 64 - power
-                right = 192 - power
-            elif output_data == []:
-                left = 64
-                right = 192
-        
-            ser.write(bytes([left, right]))
-
-    def act_on_detections(detections, labels):
-        for d in detections:
-            label = labels[int(d.category)]
-            confidence = float(d.conf)
-            if label == "person" and confidence > 0.6:
-                x, y, w, h = d.box
-                x_center = (x + w / 2) / 640
-                move_toward_person(x_center)
-                return
-            else:
-                stop()
-                return
+def act_on_detections(detections, labels):
+    for d in detections:
+        label = labels[int(d.category)]
+        confidence = float(d.conf)
+        if label == "person" and confidence > 0.6:
+            x, y, w, h = d.box
+            x_center = (x + w / 2) / 640
+            move_toward_person(x_center)
+            return
+        else:
+            stop_robot()
+            return
             
 
+if __name__ == "__main__":
+    print("HELLO WORLD")
     camera = IMX500Detector()
     camera.start(show_preview=True)
 
@@ -86,12 +77,7 @@ def main_auto():
 
     except KeyboardInterrupt:
         print("Shutting down..")
-        stop()
+        stop_robot()
         ser.close()
         camera.stop()
-
-def switch_to_controller():
-    
-    if pygame.key_get_pressed() == True:
-        main_controller()
 
