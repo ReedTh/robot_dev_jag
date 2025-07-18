@@ -35,15 +35,18 @@ try:
             turn_left(motor_drive_speed_d[mode_drive_speed])
         elif keyboard.is_pressed('Right'):
             turn_right(motor_drive_speed_d[mode_drive_speed])
-        elif keyboard.is_pressed('Left') & keyboard.is_pressed(keyboard.KEY_UP):
-            strafe_FL(motor_drive_speed_d[mode_drive_speed])
-            print("here")
-        elif keyboard.is_pressed('Right') & keyboard.is_pressed(keyboard.KEY_UP):
-            strafe_FR(motor_drive_speed_d[mode_drive_speed])
-        elif keyboard.is_pressed('Left') and keyboard.is_pressed(keyboard.KEY_DOWN):
-            strafe_RR(motor_drive_speed_d[mode_drive_speed])
-        elif keyboard.is_pressed('Right') and keyboard.is_pressed(keyboard.KEY_DOWN):
-            strafe_RL(motor_drive_speed_d[mode_drive_speed])
+
+
+        # elif keyboard.is_pressed('Left') & keyboard.is_pressed(keyboard.KEY_UP):
+        #     strafe_FL(motor_drive_speed_d[mode_drive_speed])
+        # elif keyboard.is_pressed('Right') & keyboard.is_pressed(keyboard.KEY_UP):
+        #     strafe_FR(motor_drive_speed_d[mode_drive_speed])
+        # elif keyboard.is_pressed('Left') and keyboard.is_pressed(keyboard.KEY_DOWN):
+        #     strafe_RR(motor_drive_speed_d[mode_drive_speed])
+        # elif keyboard.is_pressed('Right') and keyboard.is_pressed(keyboard.KEY_DOWN):
+        #     strafe_RL(motor_drive_speed_d[mode_drive_speed])
+
+            
         else:
             ser.write(bytes([0]))
         
