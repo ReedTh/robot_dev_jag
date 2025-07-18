@@ -9,27 +9,35 @@ LEFT_ZERO = 64
 RIGHT_ZERO = 192
 
 
+def move_forward(power=15):
+    left = 64 - power
+    right = 192 - power
+    ser.write(bytes([left, right]))
+        
+def stop():
+    ser.write(bytes([LEFT_ZERO, RIGHT_ZERO]))
+
 def move_toward_person(x_center, power=15):
-    
-        if x_center < 0.4:
-            left = 64 + int(power / 2)
-            right = 192 - power
-        elif x_center > 0.6:
-            left = 64 - power
-            right = 192 + int(power / 2)
-        elif 0.4 < x_center < 0.6:
-            left = 64 - power
-            right = 192 - power
-        elif output_data == []:
-            left = 64
-            right = 192
-    
+
+    if x_center < 0.4:
+        left = 64 + int(power / 2)
+        right = 192 - power
+    elif x_center > 0.6:
+        left = 64 - power
+        right = 192 + int(power / 2)
+    elif 0.4 < x_center < 0.6:
+        left = 64 - power
+        right = 192 - power
+    elif output_data == []:
+        left = 64
+        right = 192
+        
         ser.write(bytes([left, right]))
 
 def act_on_detections(detections, labels):
     for d in detections:
-        label = labels[int(d.category)]
-        confidence = float(d.conf)
+    label = labels[int(d.category)]
+    confidence = float(d.conf)
         if label == "person" and confidence > 0.6:
             x, y, w, h = d.box
             x_center = (x + w / 2) / 640
@@ -38,7 +46,7 @@ def act_on_detections(detections, labels):
         else:
             stop()
             return
-        
+            
 
 camera = IMX500Detector()
 camera.start(show_preview=True)
@@ -74,8 +82,7 @@ try:
 
 except KeyboardInterrupt:
     print("Shutting down..")
-    stop_robot()
+    stop()
     ser.close()
     camera.stop()
-
 
