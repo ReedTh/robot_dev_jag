@@ -4,5 +4,5 @@ Hope this serves you well!
 
 Note that this is all done on a Rasberry Pi 5 on PiOs
 Link for the robot and motor drives below:
-http://jaguar.drrobot.com/specification_4x4w.asp
-https://www.dimensionengineering.com/products/sabertooth2x25
+http://jaguar.drrobot.com/specification_4x4w.asp,
+ https://www.dimensionengineering.com/products/sabertooth2x25
