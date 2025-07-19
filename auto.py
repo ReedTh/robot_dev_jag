@@ -8,19 +8,15 @@ from drive_movement import drive_backward, drive_forward, turn_left, turn_right,
 ser = serial.Serial("/dev/ttyAMA0", 9600)
 
 
-LEFT_ZERO = 64
-RIGHT_ZERO = 192
-
-
 def move_toward_person(x_center):
  
     
-    if x_center > 0.67:
-        turn_right("MID")
-    elif x_center < 0.33:
-        turn_left("MID")
-    elif 0.4 < x_center < 0.6:
-        drive_forward("HIGH")
+    if x_center >= 0.67:
+        turn_right("LOW")
+    elif x_center <= 0.33:
+        turn_left("LOW")
+    elif 0.34 < x_center < 0.66:
+        drive_forward("LOW")
     elif output_data == []:
         stop_robot()
 
@@ -53,15 +49,42 @@ if __name__ == "__main__":
             detections = camera.get_detections()
             labels = camera.get_labels()
             
-        with open("detections.json", "w") as f: 
-            json.dump(output_data, f, indent=2)
+            output_data = []
+            for d in detections:
+                label = labels[int(d.category)]
+                confidence = float(d.conf)
+                x, y, w, h = d.box
+                
+                output_data.append({
+                    "label": label,
+                    "confidence": confidence,
+                    "bbox": {"x": x, "y": y, "w": w, "h": h}
+                })
+                
+            with open("detections.json", "w") as f: 
+                json.dump(output_data, f, indent=2)
+                
+            act_on_detections(detections, labels)
             
-        act_on_detections(detections, labels)
-        
-        if output_data == []:
-            ser.write(bytes([64, 192]))
+            if output_data == []:
+                ser.write(bytes([64, 192]))
+                
+            time.sleep(0.5)
             
-        time.sleep(0.5)
+        #     try:
+        # while True:
+        #     detections = camera.get_detections()
+        #     labels = camera.get_labels()
+            
+        #     with open("detections.json", "w") as f: 
+        #         json.dump(output_data, f, indent=2)
+                
+        #     act_on_detections(detections, labels)
+            
+        #     if output_data == []:
+        #         ser.write(bytes([64, 192]))
+                
+        #     time.sleep(0.5)
 
     except KeyboardInterrupt:
         print("Shutting down..")
