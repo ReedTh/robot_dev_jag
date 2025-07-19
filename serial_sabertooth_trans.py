@@ -1,4 +1,4 @@
-
+"""This is a function that makes it easier to work wiht the sabertooth motordriver"""
 
 def speed_to_command(motor: int, speed: float) -> int:
     """

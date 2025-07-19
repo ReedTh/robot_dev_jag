@@ -52,14 +52,7 @@ def turn_left(speed):
         ser.write(bytes([0]))
 
 def strafe_FL(speed):
-    if speed.upper() == "HIGH":
-        ser.write(bytes([speed_to_command(1,1.0), speed_to_command(2,0.825)]))
-    elif speed.upper() == "MID":
-        ser.write(bytes([speed_to_command(1,0.66), speed_to_command(2,0.50)]))
-    elif speed.upper() == "LOW":
-        ser.write(bytes([speed_to_command(1,0.33), speed_to_command(2,0.20)]))
-    else:
-        ser.write(bytes([0]))
+    pass
 
 def strafe_FR(speed):
     pass
