@@ -2,7 +2,6 @@ import json
 import time
 import serial 
 from ai_camera import IMX500Detector
-#from controller_drive import main_controller
 from drive_movement import drive_backward, drive_forward, turn_left, turn_right, stop_robot
 
 ser = serial.Serial("/dev/ttyAMA0", 9600)
@@ -10,7 +9,6 @@ ser = serial.Serial("/dev/ttyAMA0", 9600)
 
 def move_toward_person(x_center):
  
-    
     if x_center >= 0.67:
         turn_right("LOW")
     elif x_center <= 0.33:
@@ -20,8 +18,6 @@ def move_toward_person(x_center):
     elif output_data == []:
         stop_robot()
 
-    #ser.write(bytes([left, right]))
-    #ser.write(bytes([right, left]))
 
 def act_on_detections(detections, labels):
     for d in detections:
@@ -38,7 +34,6 @@ def act_on_detections(detections, labels):
             
 
 if __name__ == "__main__":
-    print("HELLO WORLD")
     camera = IMX500Detector()
     camera.start(show_preview=True)
 
@@ -70,25 +65,10 @@ if __name__ == "__main__":
                 ser.write(bytes([64, 192]))
                 
             time.sleep(0.5)
-            
-        #     try:
-        # while True:
-        #     detections = camera.get_detections()
-        #     labels = camera.get_labels()
-            
-        #     with open("detections.json", "w") as f: 
-        #         json.dump(output_data, f, indent=2)
-                
-        #     act_on_detections(detections, labels)
-            
-        #     if output_data == []:
-        #         ser.write(bytes([64, 192]))
-                
-        #     time.sleep(0.5)
+
 
     except KeyboardInterrupt:
         print("Shutting down..")
         stop_robot()
         ser.close()
         camera.stop()
-
