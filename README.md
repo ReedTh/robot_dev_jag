@@ -9,3 +9,9 @@ http://jaguar.drrobot.com/specification_4x4w.asp,
  # Getting Started
 
  This is where we will write everything to get the environment set up 
+
+Activate virtual environment:
+    - python -m venv .name/path/to/venv/activate
+
+Download requirements.txt:
+    - pip install -r requirements.txt
