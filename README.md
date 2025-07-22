@@ -9,8 +9,7 @@ http://jaguar.drrobot.com/specification_4x4w.asp,
  # Getting Started
 
  This is where we will write everything to get the environment set up 
-<<<<<<< HEAD
-   
+
 =======
 
 Activate virtual environment:
@@ -18,4 +17,4 @@ Activate virtual environment:
 
 Download requirements.txt:
     - pip install -r requirements.txt
->>>>>>> 2b9de8a8de5f984bbc5ee8a5d58f0cf9ad701b96
+
