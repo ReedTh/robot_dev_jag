@@ -91,57 +91,50 @@ if __name__ == "__main__":
     app.run()
     
 # Added part to get Hailo detections for robot control
-def get_hailo_detections_for_auto(max_frames=1):
-    from hailo_apps.hailo_app_python.apps.detection.detection_pipeline import GStreamerDetectionApp
-    from threading import Event
+class HailoDetectionRunner:
+    def __init__(self):
+        from threading import Thread
+        self.detections = []
+        self.user_data = user_app_callback_class()
+        self.user_data.set_frame(None)
+        self.app = GStreamerDetectionApp(self._callback, self.user_data)
+        self.thread = Thread(target=self.app.run)
+        self.running = False
 
-    class AutoCallback(user_app_callback_class):
-        def __init__(self, stop_event):
-            super().__init__()
-            self.detections = []
-            self.frame_count = 0
-            self.stop_event = stop_event
-
-        def increment(self):
-            self.frame_count += 1
-            if self.frame_count >= max_frames:
-                self.stop_event.set()
-
-    def wrapped_callback(pad, info, user_data):
+    def _callback(self, pad, info, user_data):
         buffer = info.get_buffer()
         if buffer is None:
             return Gst.PadProbeReturn.OK
 
-        user_data.increment()
-
         roi = hailo.get_roi_from_buffer(buffer)
         detections = roi.get_objects_typed(hailo.HAILO_DETECTION)
 
-        user_data.detections = []
+        results = []
         for detection in detections:
             label = detection.get_label()
             bbox = detection.get_bbox()
             confidence = detection.get_confidence()
             if label == "person":
                 x, y, w, h = bbox.x, bbox.y, bbox.width, bbox.height
-                user_data.detections.append({
+                results.append({
                     "label": label,
                     "confidence": confidence,
                     "bbox": {"x": x, "y": y, "w": w, "h": h}
                 })
 
+        self.detections = results
         return Gst.PadProbeReturn.OK
 
-    stop_event = Event()
-    user_data = AutoCallback(stop_event)
-    app = GStreamerDetectionApp(wrapped_callback, user_data)
+    def start(self):
+        if not self.running:
+            self.running = True
+            self.thread.start()
 
-    import threading
-    thread = threading.Thread(target=app.run)
-    thread.start()
+    def stop(self):
+        if self.running:
+            self.app.stop()
+            self.thread.join()
+            self.running = False
 
-    stop_event.wait(timeout=5)
-    app.stop()
-    thread.join()
-
-    return user_data.detections
+    def get_latest_detections(self):
+        return self.detections

@@ -1,7 +1,7 @@
 import json
 import time
 import serial 
-from detections import get_hailo_detections_for_auto
+from detections import HailoDetectionRunner
 from drive_movement import drive_backward, drive_forward, turn_left, turn_right, stop_robot
 #from ai_camera import IMX500Detector
 
@@ -26,10 +26,11 @@ def move_toward_person(x_center):
 
 def act_on_detections(detections, labels):
     for d in detections:
-        label = labels[int(d.category)]
-        confidence = float(d.conf)
+        label = d["label"]
+        confidence = d["confidence"]
         if label == "person" and confidence > 0.6:
-            x, y, w, h = d.box
+            x = d["bbox"]["x"]
+            w = d["bbox"]["w"]
             x_center = (x + w / 2) / 640
             move_toward_person(x_center)
             return
@@ -40,14 +41,14 @@ def act_on_detections(detections, labels):
 
 print("Running Hailo object detection with autonomous movement")
 
+detection_runner = HailoDetectionRunner()
+detection_runner.start()
+
 try:
     while True:
-        detections = get_hailo_detections_for_auto()
+        detections = detection_runner.get_latest_detections()
         labels = ["person"]
-
-        output_data = []
-        for d in detections:
-            output_data.append(d)
+        output_data = detections
 
         with open("detections.json", "w") as f:
             json.dump(output_data, f, indent=2)
@@ -63,6 +64,8 @@ except KeyboardInterrupt:
     print("Shutting down..")
     stop_robot()
     ser.close()
+    detection_runner.stop()
+
 
 
 # if __name__ == "__main__":
