@@ -69,6 +69,8 @@ def drive_backward_left(speed):
         ser.write(bytes([224]))
     elif speed.upper() == "LOW":
         ser.write(bytes([193]))
+    else:
+        ser.write(bytes([0]))
 
 # Defining right movement
 
