@@ -13,6 +13,7 @@ http://jaguar.drrobot.com/specification_4x4w.asp,
 
 Create virtual environment:  
     - python -m venv .name/path/to/venv/activate  
+
 Activate virtual environment:  
     - source .name_venv/bin/activate  
 
