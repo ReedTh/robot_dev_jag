@@ -189,7 +189,8 @@ def app_callback(pad, info, user_data):
                     stop_robot()
                     return
                 else:
-                    move_toward_person(x_center)
+                    move_toward_person_left(x_center)
+                    move_toward_person_right(x_center)
                     return
     if user_data.use_frame:
         # Note: using imshow will not work here, as the callback function is not running in the main thread
